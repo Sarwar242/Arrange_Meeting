@@ -5,6 +5,11 @@ use App\Http\Models\test;
 use App\Http\Models\test1;
 use App\Models\UserPanel;
 use App\Http\Controllers\MeetingController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\BatchController;
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthController;
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +39,54 @@ Route::group(['middleware'=>'auth'], function (){
     Route::get('/dashboard', function () {
         return view('UserPanel.MainContentPage');
     })->name('dashboard');
-    Route::get('/adminpanel','App\Http\Controllers\AdminPanelController@ShowView');
+
+    Route::prefix('/adminpanel')->group(function () {
+        Route::get('/','App\Http\Controllers\AdminPanelController@ShowView');
+
+        //Dept
+        Route::get('/departments',[DepartmentController::class, 'index'])->name('admin.departments');
+        Route::get('/department/create',[DepartmentController::class, 'create'])->name('admin.department.create');
+        Route::post('/department/create',[DepartmentController::class, 'store'])->name('admin.department.store');
+        Route::get('/department/update/{id}',[DepartmentController::class, 'edit'])->name('admin.department.edit');
+        Route::post('/department/update/{id}',[DepartmentController::class, 'update'])->name('admin.department.update');
+        Route::get('/department/delete/{id}',[DepartmentController::class, 'destroy'])->name('admin.department.delete');
+
+        //Courses
+        Route::get('/courses',[CourseController::class, 'index'])->name('admin.courses');
+        Route::get('/course/create',[CourseController::class, 'create'])->name('admin.course.create');
+        Route::post('/course/create',[CourseController::class, 'store'])->name('admin.course.store');
+        Route::get('/course/update/{id}',[CourseController::class, 'edit'])->name('admin.course.edit');
+        Route::post('/course/update/{id}',[CourseController::class, 'update'])->name('admin.course.update');
+        Route::get('/course/delete/{id}',[CourseController::class, 'destroy'])->name('admin.course.delete');
+
+        //Batches
+        Route::get('/batches',[BatchController::class, 'index'])->name('admin.batches');
+        Route::get('/batch/create',[BatchController::class, 'create'])->name('admin.batch.create');
+        Route::post('/batch/create',[BatchController::class, 'store'])->name('admin.batch.store');
+        Route::get('/batch/update/{id}',[BatchController::class, 'edit'])->name('admin.batch.edit');
+        Route::post('/batch/update/{id}',[BatchController::class, 'update'])->name('admin.batch.update');
+        Route::get('/batch/delete/{id}',[BatchController::class, 'destroy'])->name('admin.batch.delete');
+
+        //Students
+        Route::get('/students',[StudentController::class, 'index'])->name('admin.students');
+        Route::get('/student/create',[StudentController::class, 'create'])->name('admin.student.create');
+        Route::post('/student/create',[StudentController::class, 'store'])->name('admin.student.store');
+        Route::get('/student/update/{id}',[StudentController::class, 'edit'])->name('admin.student.edit');
+        Route::post('/student/update/{id}',[StudentController::class, 'update'])->name('admin.student.update');
+        Route::get('/student/delete/{id}',[StudentController::class, 'destroy'])->name('admin.student.delete');
+
+        //Attendances
+        Route::get('/attendances',[AttendanceController::class, 'index'])->name('admin.attendances');
+        Route::get('/present',[AttendanceController::class, 'toggle'])->name('admin.attendance.take');
+        Route::match(['get', 'post'],'/attendance',[AttendanceController::class, 'store'])->name('admin.attendance');
+        // Route::get('/attendance/update/{id}',[AttendanceController::class, 'edit'])->name('admin.attendance.edit');
+        // Route::post('/attendance/update/{id}',[AttendanceController::class, 'update'])->name('admin.attendance.update');
+
+        Route::get('/attendance/delete/{id}',[AttendanceController::class, 'destroy'])->name('admin.attendance.delete');
+        Route::get('/get-batches/{id}', function ($id) {
+            return json_encode(App\Models\Batch::where('department_id', $id)->get());
+        });
+    });
     Route::get('/AddTeacherForm','App\Http\Controllers\AdminPanelController@AddTeacherForm');
     Route::Post('/AddTeacher','App\Http\Controllers\AdminPanelController@AddTeacher')->name('AddTeacher');
     Route::get('/TeachersView','App\Http\Controllers\AdminPanelController@TeachersView');

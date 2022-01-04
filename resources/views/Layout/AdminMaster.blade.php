@@ -44,10 +44,10 @@
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="/" class="nav-link">Home</a>
+                    <a href="{{ url('/adminpanel') }}" class="nav-link">Home</a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="#" class="nav-link">Contact</a>
+                    <a href="{{ url('/') }}" class="nav-link">User</a>
                 </li>
             </ul>
 
@@ -156,7 +156,7 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="/" class="brand-link">
+            <a href="{{ url('/adminpanel') }}" class="brand-link">
                 <img src="/dist/img/bee.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
                     style="opacity: .8">
                 <span class="brand-text font-weight-light">Social Bee</span>
@@ -210,7 +210,7 @@
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-chart-pie"></i>
                                 <p>
-                                    Add teacher
+                                    Teachers
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -261,6 +261,132 @@
                                 </li>
 
 
+                            </ul>
+                        </li>
+
+
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-handshake"></i>
+                                <p>
+                                    Attendance
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="#" data-toggle="modal" style="cursor: pointer;"  id="mod" data-target="#modal1" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Take Attendance</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.attendances') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>View Attendances</p>
+                                    </a>
+                                </li>
+
+
+                            </ul>
+                        </li>
+
+
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-handshake"></i>
+                                <p>
+                                    Departments
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.department.create') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Add Department</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.departments') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>View Department</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-handshake"></i>
+                                <p>
+                                    Batches
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.batch.create') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Add Batch</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.batches') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>View Batches</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-handshake"></i>
+                                <p>
+                                    Courses
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.course.create') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Add Course</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.courses') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>View Courses</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-handshake"></i>
+                                <p>
+                                    Students
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.student.create') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Add Student</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.students') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>View Students</p>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 
@@ -315,8 +441,29 @@
     <script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE -->
     <script src="/dist/js/adminlte.js"></script>
+    @include('Layout.modal1')
 
-@yield('script')
+    <script>
+       $(document).on('change','#department',function(){
+          var dept = $("#department").val();
+          $("#batch_id").html("");
+          var option = "";
+          //send an ajax req to servers
+          $.get("/adminpanel/get-batches/" +
+          dept,
+          function(data) {
+            option = "<option selected disabled>Select one</option>";
+              var d = JSON.parse(data);
+              d.forEach(function(element) {
+                  console.log(element.id);
+                  option += "<option value='" + element.id + "'>" + element.name + "</option>";
+              });
+              $("#batch").html(option);
+          });
+    });
+    </script>
+    @yield('script')
+
     <!-- OPTIONAL SCRIPTS -->
     <script src="/plugins/chart.js/Chart.min.js"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
@@ -365,8 +512,6 @@
 
         });
     });
-
-
     </script>
     <script>
 		var deleteLinks = document.querySelectorAll('.delete');
@@ -384,6 +529,9 @@
     <script src="/dist/js/demo.js"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="/dist/js/pages/dashboard3.js"></script>
+
+
 </body>
 
 </html>
+
