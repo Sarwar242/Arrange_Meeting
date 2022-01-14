@@ -82,10 +82,10 @@
                                         <input type="email" name="email" class="form-control" id="email" required>
                                     </div>
 
-                                    <div class="form-group col-sm-6 offset-sm-3">
+                                    {{-- <div class="form-group col-sm-6 offset-sm-3">
                                         <label for="address">Address</label>
                                         <input type="text" name="address" class="form-control" id="address">
-                                    </div>
+                                    </div> --}}
                                     <div class="form-group col-sm-6 offset-sm-3">
                                         <label for="batch">Department-Batch</label>
                                         <select class="form-control selectpicker" name="batch_id" id="batch" required>
