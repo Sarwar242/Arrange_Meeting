@@ -32,10 +32,17 @@
                 <div class="card-header border-0">
                     <h2 class="card-title"><b>{{ \Carbon\Carbon::parse($meeting->day)->format('l') }}</b> <span> <small>
                         [{{ \Carbon\Carbon::parse($meeting->day)->format('d-m-y') }}]</small> </span></h2>
+
                     <div class="card-tools">
-                    <a href="#" class="btn btn-tool btn-sm">
-                        <i class="fas fa-bars"></i>
-                    </a>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-tool dropdown-toggle" data-toggle="dropdown">
+                                <i class="fas fa-wrench"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" role="menu">
+                                <a href="#" class="dropdown-item">Finished</a>
+                                <a href="#" class="dropdown-item">Cancel</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <ul>
@@ -60,9 +67,7 @@
                     <h2 class="card-title"><b>{{ \Carbon\Carbon::parse($participant->meeting->day)->format('l') }}</b> <span> <small>
                         [{{ \Carbon\Carbon::parse($participant->meeting->day)->format('d-m-y') }}]</small> </span></h2>
                     <div class="card-tools">
-                    <a href="#" class="btn btn-tool btn-sm">
-                        <i class="fas fa-bars"></i>
-                    </a>
+                   
                     </div>
                 </div>
                 <ul>

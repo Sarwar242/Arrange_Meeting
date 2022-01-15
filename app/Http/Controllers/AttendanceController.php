@@ -91,6 +91,7 @@ class AttendanceController extends Controller
                 DB::table('student_attendance')->insert([
                     'student_id' => $student->id,
                     'attendance_id' => $attd->id,
+                    'present' => 1
                 ]);
             }
             $attendances=StudentAttendance::where('attendance_id', $attd->id)->get();

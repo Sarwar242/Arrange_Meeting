@@ -18,7 +18,7 @@ class CreateStudentsTable extends Migration
             $table->string('name');
             $table->string('roll')->unique();
             $table->string('email');
-            $table->string('address');
+            $table->string('address')->nullable();
             $table->string('session');
             $table->unSignedBigInteger('department_id')->nullable();
             $table->unSignedBigInteger('batch_id')->nullable();
