@@ -10,6 +10,13 @@ use App\Models\Batch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Yajra\Datatables\Datatables;
+use Illuminate\Support\HtmlString;
+use Yajra\DataTables\Html\Builder;
+use Yajra\DataTables\Html\Column;
+use Yajra\DataTables\Html\Editor\Editor;
+use Yajra\DataTables\Html\Editor\Fields;
+use Yajra\DataTables\Services\DataTable;
 use Carbon\Carbon;
 use Auth;
 use DB;
@@ -24,10 +31,84 @@ class AttendanceController extends Controller
     public function index()
     {
 
-        $attendances=Attendance::all();
+        $attendances=Attendance::orderBy('created_at','desc')->get();
         return view('attendance.all', compact('attendances'));
     }
 
+
+    public function getIndex(Request $request, Builder $htmlBuilder)
+    {
+        $this->validate($request,[
+            'attendance_id' => 'required',
+        ]);
+        $attd= Attendance::find($request->attendance_id);
+        $attendances=StudentAttendance::where('attendance_id', $attd->id)->get();
+        if (empty($attd) || empty($attendances)) {
+            abort(403);
+        }
+        $html = $htmlBuilder
+                ->setTableId('dataTable')
+                ->addColumn(['data' => 'index', 'name' => 'index', 'title' => '#'])
+                ->addColumn(['data' => 'name', 'name' => 'name', 'title' => 'Name'])
+                ->addColumn(['data' => 'roll', 'name' => 'roll', 'title' => 'Roll'])
+                ->addColumn(['data' => 'session', 'name' => 'session', 'title' => 'Session'])
+                ->addColumn(['data' => 'updated_at', 'name' => 'updated_at', 'title' => 'Date-Time'])
+                ->addColumn(['data' => 'present', 'name' => 'present', 'title' => 'Status'])
+                ->parameters([
+                        'buttons' =>  [
+                            [
+                                'extend' => 'collection',
+                                'text' => __('Export'),
+                                'buttons'   => [
+                                    [
+                                        'extend' => 'csvHtml5',
+                                        'text' => __('CSV'),
+                                        'filename' => 'Attendance_' . date('YmdHis'),
+                                        'exportOptions' => ['modifier' => ['selected' => true]]
+                                    ],
+                                    [
+                                        'extend' => 'excelHtml5',
+                                        'text' => __('Excel'),
+                                        'filename' => 'Attendance_' . date('YmdHis'),
+                                        'title' => '',
+                                        'exportOptions' => ['modifier' => ['selected' => true]]
+                                    ],
+                                ]
+                            ]
+                        ]
+                ]);
+                info(json_encode($html,true));
+        return view('attendance.export', compact(['attd','html']));
+    }
+
+/**
+ * Process datatables ajax request.
+ *
+ * @return \Illuminate\Http\JsonResponse
+ */
+    public function anyData(Request $request)
+    {
+        $attendances =StudentAttendance::join('students', 'student_attendance.student_id', '=', 'students.id')
+                                        ->select(['students.name', 'students.roll', 'students.session', 'student_attendance.updated_at', 'student_attendance.present'])
+                                        ->where('student_attendance.attendance_id', $request->attendance_id);
+        return Datatables::of($attendances)
+                            ->addIndexColumn()
+                            ->editColumn('updated_at', function($data){
+                                if(!is_null($data->updated_at)){
+                                    $formatedDate = Carbon::createFromFormat('Y-m-d H:i:s', $data->updated_at)->format('d-m-Y h:i A');
+                                    return $formatedDate;
+                                }
+                                return "N/A";
+                            })
+                            ->editColumn('present', function($data){
+                                if($data->present==1){
+                                    return new HtmlString("<span class='text-success'>Yes</span>");
+                                }
+                                return new HtmlString("<span class='text-danger'>No</span>");;
+                            })
+                            ->skipPaging()
+                            ->make(true);
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -91,7 +172,9 @@ class AttendanceController extends Controller
                 DB::table('student_attendance')->insert([
                     'student_id' => $student->id,
                     'attendance_id' => $attd->id,
-                    'present' => 1
+                    'present' => 1,
+                    "created_at" =>  \Carbon\Carbon::now(),
+                    "updated_at" => \Carbon\Carbon::now(),
                 ]);
             }
             $attendances=StudentAttendance::where('attendance_id', $attd->id)->get();

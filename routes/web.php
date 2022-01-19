@@ -79,9 +79,8 @@ Route::group(['middleware'=>'auth'], function (){
         Route::get('/attendances',[AttendanceController::class, 'index'])->name('admin.attendances');
         Route::get('/present',[AttendanceController::class, 'toggle'])->name('admin.attendance.take');
         Route::match(['get', 'post'],'/attendance',[AttendanceController::class, 'store'])->name('admin.attendance');
-        // Route::get('/attendance/update/{id}',[AttendanceController::class, 'edit'])->name('admin.attendance.edit');
-        // Route::post('/attendance/update/{id}',[AttendanceController::class, 'update'])->name('admin.attendance.update');
-
+        Route::post('/attendance/export', [AttendanceController::class,'getIndex'])->name('admin.attendance.export');
+        Route::get('/attendance/export', [AttendanceController::class,'anyData'])->name('admin.attendance.data');
         Route::get('/attendance/delete/{id}',[AttendanceController::class, 'destroy'])->name('admin.attendance.delete');
         Route::get('/get-batches/{id}', function ($id) {
             return json_encode(App\Models\Batch::where('department_id', $id)->get());
@@ -102,9 +101,7 @@ Route::group(['middleware'=>'auth'], function (){
     Route::post('/meeting/update/{id}', [MeetingController::class, 'update'])->name('meeting.update.post');
     Route::get('/meeting/delete/{id}', [MeetingController::class, 'delete'])->name('meeting.delete');
 
-    // Route::get('/test1','App\Http\Controllers\AdminPanelController@test1');
-    // Route::get('/testview','App\Http\Controllers\AdminPanelController@view');
-    // Route::get('/testviewdata/{id}','App\Http\Controllers\AdminPanelController@testviewdata');
+
 
     // UserPanel
     // Route::get('/ShowTTableForMeeting','App\Http\Controllers\UserPanelController@ShowTeacherTableForMeeting');
