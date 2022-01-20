@@ -41,7 +41,7 @@
                             <div class="card-header ">
                                 <h3 class="card-title">Students List</h3>
                                 <h3 class="card-title float-right">
-                                    <form method="post" action="{{ route('admin.attendance.export') }}">
+                                    <form method="post" action="{{ route('admin.attendance.export',$attd->id) }}">
                                         @csrf
                                         <input type="hidden" name="attendance_id" value="{{ $attd->id}}" >
                                         <button type="submit" class="btn btn-sm btn-warning text-bold">

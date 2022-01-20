@@ -8,15 +8,33 @@ use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
+use Illuminate\Support\HtmlString;
+use Carbon\Carbon;
+use PDF;
 
 class AttendanceDataTable extends DataTable
 {
-    /**
-     * Build DataTable class.
-     *
-     * @param mixed $query Results from query() method.
-     * @return \Yajra\DataTables\DataTableAbstract
-     */
+    public function ajax()
+    {
+        return datatables()
+            ->eloquent($this->query())
+            ->addIndexColumn()
+            ->editColumn('updated_at', function($data){
+                if(!is_null($data->updated_at)){
+                    $formatedDate = Carbon::createFromFormat('Y-m-d H:i:s', $data->updated_at)->format('d-m-Y h:i A');
+                    return $formatedDate;
+                }
+                return "N/A";
+            })
+            ->editColumn('present', function($data){
+                if($data->present==1){
+                    return new HtmlString("<span class='text-success'>Yes</span>");
+                }
+                return new HtmlString("<span class='text-danger'>No</span>");;
+            })
+            ->skipPaging()
+            ->make(true);
+    }
     public function dataTable($data)
     {
         return datatables()
@@ -47,11 +65,12 @@ class AttendanceDataTable extends DataTable
      * @param \App\Models\AttendanceDataTable $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query($attendance_id)
+    public function query()
     {
+        info(json_encode($this));
         return StudentAttendance::join('students', 'student_attendance.student_id', '=', 'students.id')
-                                        ->select(['students.name', 'students.roll', 'students.session', 'student_attendance.updated_at', 'student_attendance.present'])
-                                        ->where('student_attendance.attendance_id', $attendance_id);
+                ->select(['students.name', 'students.roll', 'students.session', 'student_attendance.updated_at', 'student_attendance.present'])
+                ->where('student_attendance.attendance_id',$this->id);
 
     }
 

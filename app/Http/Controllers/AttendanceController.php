@@ -18,8 +18,10 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 use Carbon\Carbon;
+use App\DataTables\AttendanceDataTable;
 use Auth;
 use DB;
+use PDF;
 
 class AttendanceController extends Controller
 {
@@ -36,7 +38,7 @@ class AttendanceController extends Controller
     }
 
 
-    public function getIndex(Request $request, Builder $htmlBuilder)
+    public function getIndex(Request $request, Builder $htmlBuilder, AttendanceDataTable $dataTable)
     {
         $this->validate($request,[
             'attendance_id' => 'required',
@@ -53,32 +55,10 @@ class AttendanceController extends Controller
                 ->addColumn(['data' => 'roll', 'name' => 'roll', 'title' => 'Roll'])
                 ->addColumn(['data' => 'session', 'name' => 'session', 'title' => 'Session'])
                 ->addColumn(['data' => 'updated_at', 'name' => 'updated_at', 'title' => 'Date-Time'])
-                ->addColumn(['data' => 'present', 'name' => 'present', 'title' => 'Status'])
-                ->parameters([
-                        'buttons' =>  [
-                            [
-                                'extend' => 'collection',
-                                'text' => __('Export'),
-                                'buttons'   => [
-                                    [
-                                        'extend' => 'csvHtml5',
-                                        'text' => __('CSV'),
-                                        'filename' => 'Attendance_' . date('YmdHis'),
-                                        'exportOptions' => ['modifier' => ['selected' => true]]
-                                    ],
-                                    [
-                                        'extend' => 'excelHtml5',
-                                        'text' => __('Excel'),
-                                        'filename' => 'Attendance_' . date('YmdHis'),
-                                        'title' => '',
-                                        'exportOptions' => ['modifier' => ['selected' => true]]
-                                    ],
-                                ]
-                            ]
-                        ]
-                ]);
-                info(json_encode($html,true));
-        return view('attendance.export', compact(['attd','html']));
+                ->addColumn(['data' => 'present', 'name' => 'present', 'title' => 'Status']);
+        //         info(json_encode($html,true));
+
+        return $dataTable->with('id', $request->attendance_id)->render('attendance.export');
     }
 
 /**
@@ -86,28 +66,10 @@ class AttendanceController extends Controller
  *
  * @return \Illuminate\Http\JsonResponse
  */
-    public function anyData(Request $request)
+    public function anyData(Request $request, AttendanceDataTable $dataTable, $id)
     {
-        $attendances =StudentAttendance::join('students', 'student_attendance.student_id', '=', 'students.id')
-                                        ->select(['students.name', 'students.roll', 'students.session', 'student_attendance.updated_at', 'student_attendance.present'])
-                                        ->where('student_attendance.attendance_id', $request->attendance_id);
-        return Datatables::of($attendances)
-                            ->addIndexColumn()
-                            ->editColumn('updated_at', function($data){
-                                if(!is_null($data->updated_at)){
-                                    $formatedDate = Carbon::createFromFormat('Y-m-d H:i:s', $data->updated_at)->format('d-m-Y h:i A');
-                                    return $formatedDate;
-                                }
-                                return "N/A";
-                            })
-                            ->editColumn('present', function($data){
-                                if($data->present==1){
-                                    return new HtmlString("<span class='text-success'>Yes</span>");
-                                }
-                                return new HtmlString("<span class='text-danger'>No</span>");;
-                            })
-                            ->skipPaging()
-                            ->make(true);
+info(json_encode( $request));
+        return $dataTable->with('id', $id)->render('attendance.export');
     }
     /**
      * Show the form for creating a new resource.

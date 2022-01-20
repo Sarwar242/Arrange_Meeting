@@ -2,7 +2,8 @@
 @section('css')
 <link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
 <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.0.3/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.1.0/css/buttons.dataTables.min.css">
 @endsection
 @section('teacherView')
     <!-- Content Wrapper. Contains page content -->
@@ -22,16 +23,16 @@
         <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
-                <div class="row">
+                <div class="row" id="row">
                     <div class="col-12">
                         <div class="card">
-                            <ul class="list-group list-group-flush">
+                            {{-- <ul class="list-group list-group-flush">
                                 <li class="list-group-item"> <strong>Course:</strong>&nbsp;&nbsp;&nbsp; {{ $attd->course->name }} </li>
                                 <li class="list-group-item"> <strong>Department:</strong> &nbsp;&nbsp;{{ $attd->department->name }} </li>
                                 <li class="list-group-item"> <strong>Batch:</strong>&nbsp;&nbsp;&nbsp; {{ $attd->batch->name }} </li>
                                 <li class="list-group-item"> <strong>Date:</strong> &nbsp;&nbsp;&nbsp;{{\Carbon\Carbon::parse($attd->day)->format('d-m-y')}} </li>
                                 <input type="hidden" name="attendance_id" id="attendance_id" value="{{ $attd->id }}">
-                            </ul>
+                            </ul> --}}
                           </div>
                         <div class="card card-primary">
                             <div class="card-header ">
@@ -61,7 +62,21 @@
                             @endif
                             <!-- /.card-header -->
                             <div class="card-body">
-                                {!! $html->table() !!}
+                                <table id="dataTable" class="table">
+                                    <thead class="thead-dark">
+                                      <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Roll</th>
+                                        <th scope="col">Session</th>
+                                        <th scope="col">Date-Time</th>
+                                        <th scope="col">Status</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
                             </div>
                             <!-- /.card-body -->
                         </div>
@@ -73,6 +88,7 @@
                 </div>
                 <!-- /.row -->
             </div>
+            <h4 class="text-center btn btn-info btn-block btn-sm" onclick="printDiv('row')"> Print </h4>
             <!-- /.container-fluid -->
         </section>
         <!-- /.content -->
@@ -84,23 +100,28 @@
 @section('script')
 
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
-    <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.0.3/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.1.0/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.1.0/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.1.0/js/buttons.print.min.js"></script>
+
     <script src="/vendor/datatables/buttons.server-side.js"></script>
    <script type="text/javascript">
         $(document).ready(function() {
             $('#dataTable').DataTable({
-                processing: true,
-                serverSide: true,
                 dom: 'Bfrtip',
                 buttons: [
-                    'excel',
-                    'csv',
-                    'pdf'
+                    'excel', 'print'
                 ],
+                processing: true,
+                serverSide: true,
                 ajax: {
-                    url: "{!! route('admin.attendance.data') !!}",
-                    type: 'GET',
+                    url: "{!! route('admin.attendance.export', ) !!}",
+                    type: 'POST',
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                     data: function (data) {
                         data.attendance_id  = $('input#attendance_id').val();
                     },
@@ -116,5 +137,20 @@
                 paging: false
             });
         });
+    </script>
+    <script>
+        function printDiv(elementId) {
+            let printElement = document.getElementById(elementId);
+            var printWindow = window.open('', 'PRINT');
+            printWindow.document.write(document.documentElement.innerHTML);
+            setTimeout(() => { // Needed for large documents
+            printWindow.document.body.style.margin = '0 0';
+            printWindow.document.body.innerHTML = printElement.outerHTML;
+            printWindow.document.close(); // necessary for IE >= 10
+            printWindow.focus(); // necessary for IE >= 10*/
+            printWindow.print();
+            printWindow.close();
+            }, 1000)
+        }
     </script>
 @endsection

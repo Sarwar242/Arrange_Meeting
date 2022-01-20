@@ -79,8 +79,8 @@ Route::group(['middleware'=>'auth'], function (){
         Route::get('/attendances',[AttendanceController::class, 'index'])->name('admin.attendances');
         Route::get('/present',[AttendanceController::class, 'toggle'])->name('admin.attendance.take');
         Route::match(['get', 'post'],'/attendance',[AttendanceController::class, 'store'])->name('admin.attendance');
-        Route::post('/attendance/export', [AttendanceController::class,'getIndex'])->name('admin.attendance.export');
-        Route::get('/attendance/export', [AttendanceController::class,'anyData'])->name('admin.attendance.data');
+        Route::post('/attendance/export/{id}', [AttendanceController::class,'anyData'])->name('admin.attendance.export');
+        Route::get('/attendance/export/{id}', [AttendanceController::class,'anyData'])->name('admin.attendance.data');
         Route::get('/attendance/delete/{id}',[AttendanceController::class, 'destroy'])->name('admin.attendance.delete');
         Route::get('/get-batches/{id}', function ($id) {
             return json_encode(App\Models\Batch::where('department_id', $id)->get());
