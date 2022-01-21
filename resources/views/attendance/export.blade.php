@@ -14,6 +14,7 @@
                 <div class="row mb-2">
                     <div class="col-sm-6 offset-sm-5">
                         <h1>Students Attendance</h1>
+                       
                     </div>
 
                 </div>
@@ -62,7 +63,8 @@
                             @endif
                             <!-- /.card-header -->
                             <div class="card-body">
-                                <table id="dataTable" class="table">
+                                {!! $dataTable->table() !!}
+                                {{-- <table id="dataTable" class="table">
                                     <thead class="thead-dark">
                                       <tr>
                                         <th scope="col">#</th>
@@ -76,7 +78,7 @@
                                     <tbody>
 
                                     </tbody>
-                                </table>
+                                </table> --}}
                             </div>
                             <!-- /.card-body -->
                         </div>
@@ -109,35 +111,8 @@
     <script src="https://cdn.datatables.net/buttons/2.1.0/js/buttons.print.min.js"></script>
 
     <script src="/vendor/datatables/buttons.server-side.js"></script>
-   <script type="text/javascript">
-        $(document).ready(function() {
-            $('#dataTable').DataTable({
-                dom: 'Bfrtip',
-                buttons: [
-                    'excel', 'print'
-                ],
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url: "{!! route('admin.attendance.export', ) !!}",
-                    type: 'POST',
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                    data: function (data) {
-                        data.attendance_id  = $('input#attendance_id').val();
-                    },
-                },
-                columns: [
-                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
-                    { data: 'name', name: 'students.name'},
-                    { data: 'roll', name: 'students.roll'},
-                    { data: 'session', name: 'students.session'},
-                    { data: 'updated_at', name: 'student_attendance.updated_at', orderable: false, searchable: false},
-                    { data: 'present', name: 'student_attendance.present', orderable: false, searchable: false}
-                ],
-                paging: false
-            });
-        });
-    </script>
+
+        {!! $dataTable->scripts() !!}
     <script>
         function printDiv(elementId) {
             let printElement = document.getElementById(elementId);

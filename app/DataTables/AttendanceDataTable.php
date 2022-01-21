@@ -53,6 +53,7 @@ class AttendanceDataTable extends DataTable
                     return new HtmlString("<span class='text-danger'>No</span>");;
                 })
                 ->skipPaging()
+                ->skipSearching()
                 ->parameters([
                     'buttons' => ['excel'],
                 ])
@@ -67,7 +68,6 @@ class AttendanceDataTable extends DataTable
      */
     public function query()
     {
-        info(json_encode($this));
         return StudentAttendance::join('students', 'student_attendance.student_id', '=', 'students.id')
                 ->select(['students.name', 'students.roll', 'students.session', 'student_attendance.updated_at', 'student_attendance.present'])
                 ->where('student_attendance.attendance_id',$this->id);
@@ -85,13 +85,19 @@ class AttendanceDataTable extends DataTable
                     ->setTableId('dataTable')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
+                    ->ajax([
+                        'data' => 'function(d) {
+                            d.id = '.$this->id.';
+                        }'
+                    ])
                     ->dom('Bfrtip')
                     ->orderBy(1)
+                    ->searching(false)
+                    ->paging(false)
                     ->buttons(
-                        Button::make('create'),
-                        Button::make('export'),
+                        Button::make('csv'),
+                        Button::make('excel'),
                         Button::make('print'),
-                        Button::make('reset'),
                         Button::make('reload')
                     );
     }
@@ -107,7 +113,9 @@ class AttendanceDataTable extends DataTable
             Column::make('name'),
             Column::make('roll'),
             Column::make('session'),
-            Column::make('updated_at'),
+            Column::make('updated_at') ->title('Date-Time')
+                    ->searchable(false)
+                    ->orderable(false),
             Column::make('present'),
         ];
     }
@@ -119,6 +127,6 @@ class AttendanceDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'Attendance_' . date('YmdHis');
+        return $this->department .'_'. $this->batch.'_'.$this->course.'_'.$this->day;
     }
 }

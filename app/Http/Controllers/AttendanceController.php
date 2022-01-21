@@ -68,8 +68,14 @@ class AttendanceController extends Controller
  */
     public function anyData(Request $request, AttendanceDataTable $dataTable, $id)
     {
-info(json_encode( $request));
-        return $dataTable->with('id', $id)->render('attendance.export');
+        // info("id: ".$request->id);
+        $attd= Attendance::find($request->id);
+        return $dataTable->with('id', $id) ->with([
+            'department' => $attd->department->name,
+            'batch' => $attd->batch->name,
+            'course' => $attd->course->name,
+            'day' => $attd->day,
+       ])->render('attendance.export');
     }
     /**
      * Show the form for creating a new resource.
