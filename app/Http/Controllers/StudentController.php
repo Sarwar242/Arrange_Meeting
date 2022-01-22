@@ -47,7 +47,7 @@ class StudentController extends Controller
         $this->validate($request,[
             'name' => 'required|string',
             'session' => 'required',
-            'roll' => 'nullable',
+            'roll' => 'nullable|unique:students',
             'batch_id' => 'nullable',
             'email' => 'nullable|email',
             'address' => 'nullable',
@@ -109,11 +109,16 @@ class StudentController extends Controller
      */
     public function update(Request $request, $id)
     {
-
+        $student = Student::find($id);
+        if(empty($student)){
+            session()->flash('failed', 'Something went wrong!!');
+            return redirect()->route('admin.students');
+        }
+        // dd($student->roll);
         $this->validate($request,[
             'name' => 'required|string',
             'session' => 'required',
-            'roll' => 'nullable',
+            'roll' => 'required|string|unique:students,roll,"'.$student->id.'"',
             'batch_id' => 'nullable',
             'email' => 'nullable|email',
             'address' => 'nullable',
