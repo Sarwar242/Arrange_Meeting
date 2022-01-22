@@ -123,5 +123,6 @@ class MeetingController extends Controller
     public function delete($id) {
         $meeting = Meeting::find($id);
         $meeting ->delete();
+        return redirect()->route('meetings');
     }
 }

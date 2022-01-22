@@ -13,7 +13,7 @@
                 <div class="modal-body">
                     <div class="form-group col-sm-6 offset-sm-3">
                         <label for="day">Date</label>
-                        <input type="date" name="day" class="form-control" id="day" required>
+                        <input type="date" name="day" class="form-control" id="day2" required>
                     </div>
 
                     <div class="form-group col-sm-6 offset-sm-3">
