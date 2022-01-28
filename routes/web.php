@@ -10,6 +10,9 @@ use App\Http\Controllers\BatchController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\QuizController;
+use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\AuthController;
 /*
 |--------------------------------------------------------------------------
@@ -27,9 +30,8 @@ Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 Route::post('/login',  [AuthController::class, 'login'])->name('login.post');
-// Route::get('/add', function () {
-//     return view('AdminPanel.AddTeacherForm');
-// });
+Route::get('/question/{slug}',[QuizController::class, 'quiz'])->name('quiz');
+Route::post('/question/{slug}/submit',[AnswerController::class, 'submit'])->name('quiz.submit');
 Route::group(['middleware'=>'auth'], function (){
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -84,6 +86,23 @@ Route::group(['middleware'=>'auth'], function (){
         Route::get('/get-batches/{id}', function ($id) {
             return json_encode(App\Models\Batch::where('department_id', $id)->get());
         });
+
+        //Quiz
+        Route::get('/quiz',[QuizController::class, 'index'])->name('admin.quiz');
+        Route::get('/quiz/answers',[QuizController::class, 'answers'])->name('admin.quiz.answers');
+        Route::get('/quiz/create',[QuizController::class, 'create'])->name('admin.quiz.create');
+        Route::post('/quiz/store',[QuizController::class, 'store'])->name('admin.quiz.store');
+        Route::get('/quiz/setup/{id}',[QuizController::class, 'setup'])->name('admin.quiz.setup');
+        Route::get('/quiz/edit/{id}',[QuizController::class, 'edit'])->name('admin.quiz.edit');
+        Route::get('/quiz/delete/{id}',[QuizController::class, 'destroy'])->name('admin.quiz.delete');
+
+        //Question
+        Route::post('/question/setup/{id}',[QuizController::class, 'question'])->name('admin.question.store');
+        Route::get('/question/edit/{id}',[QuestionController::class, 'edit'])->name('admin.question.edit');
+        Route::post('/question/edit/{id}',[QuestionController::class, 'update'])->name('admin.question.update');
+        Route::get('/question/delete/{id}',[QuizController::class, 'qDelete'])->name('admin.question.delete');
+
+
     });
     Route::get('/AddTeacherForm','App\Http\Controllers\AdminPanelController@AddTeacherForm');
     Route::Post('/AddTeacher','App\Http\Controllers\AdminPanelController@AddTeacher')->name('AddTeacher');
@@ -106,6 +125,7 @@ Route::group(['middleware'=>'auth'], function (){
     // Route::get('/ShowTTableForMeeting','App\Http\Controllers\UserPanelController@ShowTeacherTableForMeeting');
     // Route::get('/MessageService','App\Http\Controllers\UserPanelController@MessageService');
     // Route::get('/ArrangeMeeting','App\Http\Controllers\UserPanelController@ArrangeMeeting');
+
 
     Route::get('/userlogin', function () {
         return view('UserPanel.UserLogin');

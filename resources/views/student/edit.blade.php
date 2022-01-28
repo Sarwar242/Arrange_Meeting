@@ -56,7 +56,7 @@
                                     <strong>
                                         {!! $message !!}
                                     </strong>
-                                  </div>
+                                </div>
                             @endforeach
                             <!-- /.card-header -->
                             <!-- form start -->
