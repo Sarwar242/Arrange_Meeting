@@ -30,8 +30,8 @@ Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 Route::post('/login',  [AuthController::class, 'login'])->name('login.post');
-Route::get('/question/{slug}',[QuizController::class, 'quiz'])->name('quiz');
-Route::post('/question/{slug}/submit',[AnswerController::class, 'submit'])->name('quiz.submit');
+Route::get('/quiz/{slug}',[QuizController::class, 'quiz'])->name('quiz');
+Route::post('/quiz/{slug}/submit',[AnswerController::class, 'submit'])->name('quiz.submit');
 Route::group(['middleware'=>'auth'], function (){
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');

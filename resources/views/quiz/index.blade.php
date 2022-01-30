@@ -68,7 +68,7 @@
                                             <tr>
                                                 <td>{{ $loop->index+1 }}</td>
                                                 <td>{{ $quiz->name }}</td>
-                                                <td><a href="{{ route('quiz',$quiz->slug) }}">{{ url('/')}}/quiz/{{ $quiz->slug }}</a></td>
+                                                <td><a href="{{ route('quiz',$quiz->slug) }}" target="_blank">{{ url('/')}}/quiz/{{ $quiz->slug }}</a></td>
                                                 <td>
                                                     <a href="{{ route('admin.quiz.setup', $quiz->id) }}" class="btn btn-primary" ><i class="fa fa-edit"
                                                             style="font-size:18px; color:primary"></i></a>
